@@ -1,7 +1,17 @@
-import { Body, Get, HttpException, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Delete,
+} from '@nestjs/common';
 import { Controller } from '@nestjs/common/decorators/core/controller.decorator';
 import { HttpCode } from '@nestjs/common/decorators/http/http-code.decorator';
 import { TodoService } from 'src/Services/todo.Service';
+import { UpdateTodoDto } from 'src/todos/dto/update-todo-dto';
 import { Todo } from 'src/todos/models/todo.model';
 
 @Controller('todos')
@@ -37,5 +47,19 @@ export class TodosController {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  @Patch(':id')
+  async updateTodo(
+    @Param('id') id: string,
+
+    @Body() updatedTodo: UpdateTodoDto,
+  ): Promise<void> {
+    await this.todoService.editTodo(id, updatedTodo);
+  }
+
+  @Delete(':id')
+  async deleteTodo(@Param('id') id: number): Promise<void> {
+    await this.todoService.deleteTodo(id);
   }
 }
