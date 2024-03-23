@@ -18,7 +18,7 @@ export class TodoService {
     await this.todoModel.destroy({ where: { id } });
   }
 
-  public async editTodo(id: string, updatedTodo: Partial<any>): Promise<void> {
+  public async editTodo(id: string, updatedTodo: Partial<Todo>): Promise<void> {
     await this.todoModel.update(updatedTodo, { where: { id } });
   }
 }

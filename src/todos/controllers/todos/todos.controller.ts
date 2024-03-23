@@ -4,9 +4,9 @@ import {
   HttpException,
   HttpStatus,
   Param,
-  Patch,
   Post,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { Controller } from '@nestjs/common/decorators/core/controller.decorator';
 import { HttpCode } from '@nestjs/common/decorators/http/http-code.decorator';
@@ -23,6 +23,7 @@ export class TodosController {
   public async addTodos(@Body() todo: Omit<Todo, 'id'>) {
     try {
       await this.todoService.addTodo(todo);
+      return 'Successfully added';
     } catch (error: any) {
       throw new HttpException(
         {
@@ -49,17 +50,32 @@ export class TodosController {
     }
   }
 
-  @Patch(':id')
+  @Put(':id')
   async updateTodo(
     @Param('id') id: string,
-
     @Body() updatedTodo: UpdateTodoDto,
-  ): Promise<void> {
-    await this.todoService.editTodo(id, updatedTodo);
+  ): Promise<string> {
+    try {
+      await this.todoService.editTodo(id, updatedTodo);
+      return 'Successfully updated';
+    } catch (error) {
+      throw new HttpException(
+        'Failed to update todo',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   @Delete(':id')
-  async deleteTodo(@Param('id') id: number): Promise<void> {
-    await this.todoService.deleteTodo(id);
+  async deleteTodo(@Param('id') id: number): Promise<string> {
+    try {
+      await this.todoService.deleteTodo(id);
+      return 'Successfully deleted';
+    } catch (error) {
+      throw new HttpException(
+        'Failed to delete todo',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }
