@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from 'src/users/userDto/create-user.dto';
 import { User } from 'src/users/model/user.model';
 import * as bcrypt from 'bcrypt';
+import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 @Injectable()
 export class AuthService {
   constructor(
@@ -30,17 +31,18 @@ export class AuthService {
     // Find the user by email
     const user: User = await this.userService.findUserByEmail(email);
     if (!user) {
-      // Handle invalid email
-      throw new Error('Invalid credentials');
+      // If user is not found, throw NotFoundException
+      throw new NotFoundException('User not found');
     }
 
     // Compare the provided password with the hashed password stored in the database
-    const passwordMatch = await bcrypt.compare(password, user.password);
+    const passwordMatch = await bcrypt.hash(password, user.password);
+    console.log(password, user.password, passwordMatch);
     if (!passwordMatch) {
-      // Handle incorrect password
-      throw new Error('Invalid credentials');
+      // If password doesn't match, throw UnauthorizedException
+      throw new UnauthorizedException('Incorrect password');
     }
-
+    // $2b$04$Oj3HC37bUXXDKnZtA2dAueQ8wEZ9x1i9/m6o9iocPXxDScf7lms/i
     // Generate JWT token if authentication is successful
     const payload = { email: user.email }; // Customize payload as needed
     const accessToken = this.jwtService.sign(payload);
