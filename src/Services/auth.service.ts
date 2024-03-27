@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common/decorators/core/injectable.decorator';
-import { UserService } from './user.Service';
-import { JwtService } from '@nestjs/jwt';
-import { CreateUserDto } from 'src/users/userDto/create-user.dto';
-import { User } from 'src/users/model/user.model';
-import * as bcrypt from 'bcrypt';
-import { NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from "@nestjs/common/decorators/core/injectable.decorator";
+import { UserService } from "./user.Service";
+import { JwtService } from "@nestjs/jwt";
+import { CreateUserDto } from "src/users/userDto/create-user.dto";
+import { User } from "src/users/model/user.model";
+import * as bcrypt from "bcrypt";
+import { NotFoundException, UnauthorizedException } from "@nestjs/common";
 @Injectable()
 export class AuthService {
   constructor(
@@ -21,18 +21,18 @@ export class AuthService {
     });
     const payload = { email: this.userService.findUserByEmail };
     const accessToken = this.jwtService.sign(payload);
-    return { message: 'User registered successfully', accessToken };
+    return { message: "User registered successfully", accessToken };
   }
 
   async signIn(
     email: string,
     password: string,
-  ): Promise<{ accessToken: string }> {
+  ): Promise<{ payload; accessToken: string }> {
     // Find the user by email
     const user: User = await this.userService.findUserByEmail(email);
     if (!user) {
       // If user is not found, throw NotFoundException
-      throw new NotFoundException('User not found');
+      throw new NotFoundException("User not found");
     }
 
     // Compare the provided password with the hashed password stored in the database
@@ -40,13 +40,13 @@ export class AuthService {
     console.log(password, user.password, passwordMatch);
     if (!passwordMatch) {
       // If password doesn't match, throw UnauthorizedException
-      throw new UnauthorizedException('Incorrect password');
+      throw new UnauthorizedException("Incorrect password");
     }
     // $2b$04$Oj3HC37bUXXDKnZtA2dAueQ8wEZ9x1i9/m6o9iocPXxDScf7lms/i
     // Generate JWT token if authentication is successful
     const payload = { email: user.email }; // Customize payload as needed
     const accessToken = this.jwtService.sign(payload);
-    console.log('JWT token:', accessToken);
-    return { accessToken };
+    console.log("JWT token:", accessToken);
+    return { payload, accessToken };
   }
 }

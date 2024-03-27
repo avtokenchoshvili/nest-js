@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common/decorators/core/injectable.decorator';
-import { InjectModel } from '@nestjs/sequelize';
+import { Injectable } from "@nestjs/common/decorators/core/injectable.decorator";
+import { InjectModel } from "@nestjs/sequelize";
 
-import { hash } from 'bcrypt';
-import { User } from 'src/users/model/user.model';
-import { CreateUserDto } from 'src/users/userDto/create-user.dto';
+import { hash } from "bcrypt";
+import { User } from "src/users/model/user.model";
+import { CreateUserDto } from "src/users/userDto/create-user.dto";
 
 @Injectable()
 export class UserService {

@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common/decorators/core/injectable.decorator';
-import { InjectModel } from '@nestjs/sequelize';
+import { Injectable } from "@nestjs/common/decorators/core/injectable.decorator";
+import { InjectModel } from "@nestjs/sequelize";
 
-import { Todo } from 'src/todos/models/todo.model';
+import { Todo } from "src/todos/models/todo.model";
 
 @Injectable()
 export class TodoService {
@@ -10,7 +10,7 @@ export class TodoService {
   public findAll(): Promise<Todo[]> {
     return this.todoModel.findAll();
   }
-  public async addTodo(todo: Omit<Todo, 'id'>): Promise<void> {
+  public async addTodo(todo: Omit<Todo, "id">): Promise<void> {
     await this.todoModel.create(todo);
   }
 
